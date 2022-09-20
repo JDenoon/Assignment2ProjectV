@@ -81,15 +81,14 @@ int main()
 	}
 
 
-	//future output statement
-
-	/*
+#ifdef _DEBUG
 	for (i = 0; i < myStudents.size(); i++)
 	{
 		cout << myStudents[i].firstName  << " " << myStudents[i].lastName << endl;
 	}
-	*/
+#endif
 
+	
 	/*
 	TODO Here, psuedocode
 

@@ -10,8 +10,6 @@ release release
 
 */
 
-
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -19,95 +17,117 @@ release release
 #include <sstream>
 using namespace std;
 
+
+//define PRE_RELEASE. If not in pre-release version, this can be commented out. 
+//#define PRE_RELEASE
+
 //Declare the STUDENT_DATA struct
 struct STUDENT_DATA
 {
 	string firstName;
 	string lastName;
 	
-	//
-	//#ifdef _DEBUG
-		//string email;
-	//#endif
-	//code for ifdefine based on version
-	//string email
+	//If in pre-release version, this struct has an email string
+	#ifdef PRE_RELEASE
+		string email;
+	#endif
+	
 
 };
 
 int main()
 {
+
+	//statement for which version this code is running in
+	#ifdef PRE_RELEASE
+		cout << "This code is running in pre-release" << endl;
+	#else
+		cout << "This code is running in regular release version" << endl;
+	#endif
+
 	//counter variables
 	int i;
-	
-	//ifdef under this line
-	int arrSize = 2;
+	int  arrSize;
 
-	string fromFile;
-	
-	//ifdef under this line
-	string pieceArray[2];
+	//arraysize depends on what version the code is in
 
+	#ifdef PRE_RELEASE
+		 arrSize = 3;
+	#else
+		 arrSize = 2;
+	#endif
+		string fromFile;
+	
+	//size of the piece array depends on version
+	//version with email has 3 pieces, version without has 2
+
+	#ifdef PRE_RELEASE
+		string pieceArray[3];
+	#else
+		string pieceArray[2];
+	#endif
+
+	//create instance of student
+	
 	STUDENT_DATA student;
-	//create vector
-	vector <STUDENT_DATA> myStudents;
-	vector <string> commaSep;
 
+	//create vector
+
+	vector <STUDENT_DATA> myStudents;
 	fstream studFile;
-	studFile.open("StudentData.txt");
+
+	//choose which file to read from
+	#ifdef PRE_RELEASE
+		studFile.open("StudentData_Emails.txt");
+	#else
+		studFile.open("StudentData.txt");
+	#endif
+
+	//read from file
 
 	while (!studFile.eof())
 	{
 		getline(studFile, fromFile);
 
+		//allows for manipulation of string to separate based on the commas
 		stringstream pieces(fromFile);
 
-		//ifdef for this loop
+		//separate substring based on commas
 		for (i = 0; i < arrSize; i++)
 		{
-			string substr;
-			getline(pieces, substr, ',');
-			pieceArray[i] = substr;
+			string substring;
+			getline(pieces, substring, ',');
+			pieceArray[i] = substring;
 		}
 
-		//ifdef here
+		//put student info into struct
 		student.lastName = pieceArray[0];
 
 		student.firstName = pieceArray[1];
 
-		//Expression for when emails are here
-	
+		//in pre-release, add email to struct
+		#ifdef PRE_RELEASE
+			student.email = pieceArray[2];
+		#endif
 
+		//push student info into array
 		myStudents.push_back(student);
 	}
 
 
-#ifdef _DEBUG
-	for (i = 0; i < myStudents.size(); i++)
-	{
-		cout << myStudents[i].firstName  << " " << myStudents[i].lastName << endl;
-	}
-#endif
-
-	
-	/*
-	TODO Here, psuedocode
-
-	while !=eof
-	{
-	getline
-	manipulate line based on where commas are
-	STUDENT_DATA.firstName = blah
-	STUDENT_DATA.lastName = blah
-	ifdefine based on version
-	STUDENT_DATA.studEmail = blah
-
-	myStudents.pushback(STUDENT_DATA)
-	}
-
-	Output statements based on version
-	use myStudents.size or .length for forloop
-
-	*/
+	#ifdef _DEBUG
+		#ifdef PRE_RELEASE
+			for (i = 0; i < myStudents.size(); i++)
+			{
+				cout << myStudents[i].firstName << " " << myStudents[i].lastName << " " << myStudents[i].email << endl;
+			}
+		#else
+			for (i = 0; i < myStudents.size(); i++)
+			{
+				cout << myStudents[i].firstName  << " " << myStudents[i].lastName << endl;
+			}
+		#endif
+	#endif
 
 	return 1;
 }
